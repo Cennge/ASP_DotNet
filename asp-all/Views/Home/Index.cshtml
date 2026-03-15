@@ -1,0 +1,34 @@
+﻿@inject asp_all.Services.Kdf.IKdfService kdfService
+@{
+    ViewData["Title"] = "Home Page";
+}
+@* @kdfService.Dk("4009BA69-7EFC-4E4F-A9AF-FEC77B759BC6", "A946A088") *@
+<div class="text-center">
+    <h1 class="display-4">ASP 🤯🤯🤯 Home, sour home</h1>
+</div>
+
+<h2 class="display-5">Зміст</h2>
+
+<h3 class="display-6">
+    <a class="nav-link" asp-controller="Home" asp-action="Intro"><i class="bi bi-activity"></i> Вступ</a>
+</h3>
+
+<h3 class="display-6">
+    <a class="nav-link" asp-controller="Home" asp-action="Razor"><i class="bi bi-at"></i> Розмітковий синтаксис Razor</a>
+</h3>
+
+<h3 class="display-6">
+    <a class="nav-link" asp-controller="Home" asp-action="Models"><i class="bi bi-grid"></i> Моделі в ASP</a>
+</h3>
+
+<h3 class="display-6">
+    <a class="nav-link" asp-controller="Home" asp-action="IoC"><i class="bi bi-box-arrow-in-down-right"></i> Робота з залежностями: IoC, DI, DIP</a>
+</h3>
+
+<h3 class="display-6">
+    <a class="nav-link" asp-controller="Home" asp-action="Middleware"><i class="bi bi-hdd-rack bi-rot-90"></i> Робота з Middleware</a>
+</h3>
+
+<h3 class="display-6">
+    <a class="nav-link" asp-controller="Home" asp-action="Forms"><i class="bi bi-card-checklist"></i> Forms</a>
+</h3>

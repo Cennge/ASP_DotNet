@@ -1,0 +1,107 @@
+﻿@* Будь-яке представлення Razor має властивість Model, яка зв'язкується з 
+переданою від контролера моделлю [ return View(viewModel); ]
+тип моделі зазначається інструкцією @model *@
+@model asp_all.Models.Home.RegisterViewModel
+@{
+    ViewData["Title"] = "Models";
+}
+<div class="text-center">
+    <h1 class="display-4"><i class="bi bi-grid display-5"></i> Моделі в ASP</h1>
+</div>
+
+<p>
+    У загальному розумінні моделі в ASP - це об'єкти для передачі даних (DTO).
+    У концепції MVC (Model-View-Controller) Model - частина системи, що відповідає
+    за постачання даних, зазвичай, з БД
+</p>
+<p>
+    За призначенням моделі можна поділити на
+</p>
+<ul>
+    <li>Моделі представлень (View Models) - дані, що необхідні для відображення представлень</li>
+    <li>Моделі даних (Entities) - об'єкти, що відповідають за передачу даних від джерела (БД)</li>
+    <li>Моделі форм (Form Models) - дані, що передаються від представлень до сервера, зазвичай,
+        через заповнення HTML-форм</li>
+</ul>
+<p>
+    Перетворення моделей між різними формами називається Mapping. Можна казати, що
+    це головна зачада Контролерів
+</p>
+<form class="w-25" method="post">
+
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="user-email-addon">
+            <i class="bi bi-envelope"></i>
+        </span>
+        <input type="email"
+               class="form-control"
+               name="user-email"
+               placeholder="Email"
+               aria-label="Email"
+               aria-describedby="user-email-addon">
+    </div>
+
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="user-password-addon">
+            <i class="bi bi-lock"></i>
+        </span>
+        <input type="password"
+               class="form-control"
+               name="user-password"
+               placeholder="Password"
+               aria-label="Password"
+               aria-describedby="user-password-addon">
+    </div>
+
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="user-repeat-addon">
+            <i class="bi bi-shield-lock"></i>
+        </span>
+        <input type="password"
+               class="form-control"
+               name="user-repeat"
+               placeholder="Repeat password"
+               aria-label="Repeat password"
+               aria-describedby="user-repeat-addon">
+    </div>
+
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="user-birthdate-addon">
+            <i class="bi bi-calendar"></i>
+        </span>
+        <input type="date"
+               class="form-control"
+               name="user-birthdate"
+               aria-label="Birthdate"
+               aria-describedby="user-birthdate-addon">
+    </div>
+
+    <button type="submit"
+            class="btn btn-success"
+            name="user-button"
+            value="Register">
+        Реєстрація
+    </button>
+
+</form>
+
+@if (Model.RegisterModel == null)
+{
+    <i>Дані не передавались</i>
+}
+else
+{
+    <p>
+        Дані форми передані:
+        <br />
+        Email: @Model.RegisterModel.UserEmail
+        <br />
+        Password: @Model.RegisterModel.UserPassword
+        <br />
+        Repeat: @Model.RegisterModel.UserRepeat
+        <br />
+        Birthdate: @Model.RegisterModel.UserBirthdate
+        <br />
+        Button: @Model.RegisterModel.UserButton
+    </p>
+}

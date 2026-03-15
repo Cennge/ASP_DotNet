@@ -1,0 +1,89 @@
+﻿@* Інжекція до представлення - можлива але у край небажана *@
+@inject asp_all.Services.Hash.IHashService hashService
+@inject asp_all.Services.Scoped.ScopedService scopedService
+@inject asp_all.Services.Transient.TransientService transientService
+@{
+    ViewData["Title"] = "IoC";
+    long middleware = (long)Context.Items["MiddlewareTicks"]!;
+    long controller = (long)ViewData["ControllerTicks"]!;
+    long view = DateTime.Now.Ticks;
+
+    long mwController = controller - middleware;
+    long mvView = view - middleware;
+}
+<div class="text-center">
+    <h1 class="display-4">
+        <i class="bi bi-box-arrow-in-down-right display-5"></i>
+        Робота з залежностями: IoC, DI, DIP</h1>
+</div>  
+
+<p>
+    <strong>IoC</strong> (Inversion of Control) - Інверсія управління.
+    Архітектурний принцип згідно з яким управління життєвим циклом об'єктів-сервісів
+    перекладається на спеціальний модуль: контейнер залежностей (інжектор).
+    Можна порівняти з "глобальними ресурсами", до яких можливий доступ з різних
+    частин проєкту. Відмінність полягає у тому, що життєвий цикл - це не лише
+    створення, а й модифікація чи видалення (перестворення). Також на інжектор
+    покладається задача вирішення залежностей для випадків, коли одні сервіси
+    залежать від інших сервісів (резолюція графу залежностей).
+</p>
+<p>
+    <strong>DI</strong> (Dependency Injection) - Інжекція залежностей.
+    Архітектурний патерн декларації (організації) взаємодії з сервісами.
+    Ідея: замість звернення до контейнера на пряму <code>Container.GetService("Hash")</code>
+    вживається декларативна форма оголошення об'єктів з залежність від даних, що
+    мають бути передані "ззовні"
+    <code>class Sign(HashService hash){...}</code>. Створення об'єктів-сервісів покладається
+    на контейнер, до задач якого також додається задача резолюції інших об'єктів:
+    <code><s>sign = new Sign(?)</s></code> &rarr; <code>sign = Container.Resolve(Sign)</code>
+</p>
+<p>
+    <strong>DIP</strong> (Dependency Inversion Principle, soliD) - Принцип інверсії залежностей.
+    Не рекомендується створювати залежності від реалізацій (класів),
+    рекомендується - від абстракцій (інтерфейсів). Причому абстракція має бти максимальною
+    з доцільних.
+    <code><s>class Service(AsusMouse mouse)</s></code> &rarr;
+    <code><u>class Service(ComputerMouse mouse)</u></code> &rarr;
+    <code><b>class Service(IProduct product)</b></code> &rarr;
+    Навпаки, якщо сервіс існує у вигляді об'єкту, то рекомендується створити під 
+    нього інтерфейс і впроваджувати залежності через нього.
+</p>
+<p>
+    Підсумки:
+</p>
+<ul>
+    <li>У корені проєкта створюємо директорію <code>Services</code></li>
+    <li>Під кожен сервіс створюємо окрему директорію (в середини <code>Services</code>)</li>
+    <li>У директорії сервісу створюємо інтерфейс та принаймні один клас-реалізацію</li>
+    <li>Реєструємо співставлення інтерфейсу та класу-сервісу у контейнері (<code>Program.cs</code>)</li>
+    <li>* Традицією є використання класів-розширень, що приховують деталі співставлення</li>
+    <li>Інжектуємо сервіс у декларативний спосіб - див. конструктор HomeController</li>
+</ul>
+@ViewData["hash"]
+<p>
+    Моделюємо задачу: перейти на новий тип хешу
+</p>
+<ul>
+    <li>В середині <code>Services/Hash</code> додаємо новий клас</li>
+    <li>Змінюємо співставлення інтерфейсу та класу в розширенні
+        (або Program.cs якщо розширення не вводилось)</li>
+</ul>
+
+<h2>Життєві цикли сервісів</h2>
+<p>
+    Оновіть сторінку для контролю змін
+</p>
+<table class="table">
+    <tbody>
+        <tr><td></td><td>Middleware</td><td>Controller</td><td>Razor</td></tr>
+        <tr><td>Singleton</td><td>@Context.Items["FromDemoMiddleware"]</td><td>@ViewData["hashCode"]</td><td>@hashService.GetHashCode()</td></tr>
+        <tr><td>Scope</td><td>@Context.Items["MiddlewareScopedHash"]</td><td>@ViewData["ControllerScopedHash"]</td><td>@scopedService.GetHashCode()</td></tr>
+        <tr><td>Transient</td><td>@Context.Items["MiddlewareTransientHash"]</td><td>@ViewData["ControllerTransientHash"]</td><td>@transientService.GetHashCode()</td></tr>
+        <tr></tr>
+        <tr><td>Ticks</td><td>@middleware</td><td>@controller (+@mwController)</td><td>@view +(@mvView)</td></tr>
+    </tbody>
+</table>
+<p>
+    NationalDateTimeService: 
+    @ViewData["date"] @ViewData["time"]
+</p>
