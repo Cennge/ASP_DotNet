@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-namespace asp_all.Models.Home
+namespace asp_all.Models.User
 {
-    public class HomeFormsFormModel
+    public class UserSignUpFormModel
     {
         [FromForm(Name = "user-name")]
         [Required(ErrorMessage = "Заповніть дане поле")]
@@ -27,6 +28,11 @@ namespace asp_all.Models.Home
 
         [FromForm(Name = "user-repeat")]
         public String UserRepeat { get; set; } = null!;
+
+        [FromForm(Name = "user-avatar")]
+        [JsonIgnore]
+        public IFormFile? UserAvatar { get; set; }
+        public String? SavedFilename { get; set; }
 
         [FromForm(Name = "user-button")]
         public String UserButton { get; set; } = null!;

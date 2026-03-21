@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace asp_all.Services.Kdf
 {
-    internal interface IKdfService
+    public interface IKdfService
     {
         String Dk(String salt, String password);
     }

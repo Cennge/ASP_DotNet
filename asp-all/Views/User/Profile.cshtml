@@ -1,0 +1,21 @@
+﻿@using System.Security.Claims
+@using asp_all.Data.Entities
+@{
+    ViewData["Title"] = "Profile";
+    bool isAuth = Context.User.Identity?.IsAuthenticated ?? false;
+    String? userAvatar = isAuth ? Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Thumbprint)?.Value : null;
+    String? userName = isAuth ? Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value : null;
+}
+
+<div class="text-center">
+    <h1 class="display-4">
+        @if (String.IsNullOrEmpty(userAvatar))
+        {
+            <span>@(((userName ?? "").Length > 0) ? userName![0] : 'P')</span>
+        }
+        else
+        {
+            <img src="/Storage/Item/@userAvatar" alt="Ava" style="max-width: 50px; max-height: 50px" />
+        }
+        Кабінет користувача</h1>
+</div>

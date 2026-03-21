@@ -18,6 +18,8 @@
 
         public DateTime? DeletedAt { get; set; }
 
+        public String? AvatarFilename { get; set; }
+
         //навігаційні влстивості - посилнная на ішні сутності - спрощена схема зв'язування даних
         public UserData UserData { get; set; } = null!;
 

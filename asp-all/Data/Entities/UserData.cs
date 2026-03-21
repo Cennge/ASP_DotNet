@@ -1,4 +1,6 @@
-﻿namespace asp_all.Data.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace asp_all.Data.Entities
 {
     public class UserData
     {
@@ -13,6 +15,7 @@
         public DateTime? DeletedAt { get; set; }
 
         //інверсна навігаційна властивість - через UserAccess.UserId
+        [JsonIgnore]
         public ICollection<UserAccess> UserAccesses { get; set; } = [];
     }
 }

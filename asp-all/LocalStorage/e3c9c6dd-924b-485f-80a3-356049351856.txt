@@ -1,0 +1,385 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class box abstract
+{
+public:
+    virtual string get_name() abstract;
+};
+
+class hdd abstract
+{
+public:
+    virtual string get_name() abstract;
+};
+
+class main_board abstract
+{
+public:
+    virtual string get_name() abstract;
+};
+
+class processor abstract
+{
+public:
+    virtual string get_name() abstract;
+};
+
+class memory abstract
+{
+public:
+    virtual string get_name() abstract;
+};
+
+class gpu abstract
+{
+public:
+    virtual string get_name() abstract;
+};
+
+class silver_box : public box
+{
+public:
+    string get_name() override
+    {
+        return "SilverBox";
+    }
+};
+
+class black_box : public box
+{
+public:
+    string get_name() override
+    {
+        return "BlackBox";
+    }
+};
+
+class samsung_hdd : public hdd
+{
+public:
+    string get_name() override
+    {
+        return "Samsung HDD";
+    }
+};
+
+class lg_hdd : public hdd
+{
+public:
+    string get_name() override
+    {
+        return "LG HDD";
+    }
+};
+
+class msi_main_board : public main_board
+{
+public:
+    string get_name() override
+    {
+        return "MSI MainBoard";
+    }
+};
+
+class asus_main_board : public main_board
+{
+public:
+    string get_name() override
+    {
+        return "Asus MainBoard";
+    }
+};
+
+class intel_processor : public processor
+{
+public:
+    string get_name() override
+    {
+        return "Intel Processor";
+    }
+};
+
+class amd_processor : public processor
+{
+public:
+    string get_name() override
+    {
+        return "AMD Processor";
+    }
+};
+
+class ddr3_memory : public memory
+{
+public:
+    string get_name() override
+    {
+        return "DDR3 Memory";
+    }
+};
+
+class ddr2_memory : public memory
+{
+public:
+    string get_name() override
+    {
+        return "DDR2 Memory";
+    }
+};
+
+class integrated_gpu : public gpu
+{
+public:
+    string get_name() override
+    {
+        return "Integrated GPU";
+    }
+};
+
+class nvidia_gpu : public gpu
+{
+public:
+    string get_name() override
+    {
+        return "Nvidia GPU";
+    }
+};
+
+class pc
+{
+    box* pc_box;
+    processor* pc_processor;
+    main_board* pc_main_board;
+    hdd* pc_hdd;
+    memory* pc_memory;
+    gpu* pc_gpu;
+
+public:
+    void set_box(box* p_box)
+    {
+        pc_box = p_box;
+    }
+
+    void set_processor(processor* p_processor)
+    {
+        pc_processor = p_processor;
+    }
+
+    void set_main_board(main_board* p_main_board)
+    {
+        pc_main_board = p_main_board;
+    }
+
+    void set_hdd(hdd* p_hdd)
+    {
+        pc_hdd = p_hdd;
+    }
+
+    void set_memory(memory* p_memory)
+    {
+        pc_memory = p_memory;
+    }
+
+    void set_gpu(gpu* p_gpu)
+    {
+        pc_gpu = p_gpu;
+    }
+
+    box* get_box()
+    {
+        return pc_box;
+    }
+
+    processor* get_processor()
+    {
+        return pc_processor;
+    }
+
+    main_board* get_main_board()
+    {
+        return pc_main_board;
+    }
+
+    hdd* get_hdd()
+    {
+        return pc_hdd;
+    }
+
+    memory* get_memory()
+    {
+        return pc_memory;
+    }
+
+    gpu* get_gpu()
+    {
+        return pc_gpu;
+    }
+};
+
+class i_pc_factory abstract
+{
+public:
+    virtual box* create_box() abstract;
+    virtual processor* create_processor() abstract;
+    virtual main_board* create_main_board() abstract;
+    virtual hdd* create_hdd() abstract;
+    virtual memory* create_memory() abstract;
+    virtual gpu* create_gpu() abstract;
+};
+
+class home_pc_factory : public i_pc_factory
+{
+public:
+    box* create_box() override
+    {
+        return new silver_box();
+    }
+
+    processor* create_processor() override
+    {
+        return new intel_processor();
+    }
+
+    main_board* create_main_board() override
+    {
+        return new msi_main_board();
+    }
+
+    hdd* create_hdd() override
+    {
+        return new samsung_hdd();
+    }
+
+    memory* create_memory() override
+    {
+        return new ddr3_memory();
+    }
+
+    gpu* create_gpu() override
+    {
+        return new integrated_gpu();
+    }
+};
+
+class office_pc_factory : public i_pc_factory
+{
+public:
+    box* create_box() override
+    {
+        return new black_box();
+    }
+
+    processor* create_processor() override
+    {
+        return new amd_processor();
+    }
+
+    main_board* create_main_board() override
+    {
+        return new asus_main_board();
+    }
+
+    hdd* create_hdd() override
+    {
+        return new lg_hdd();
+    }
+
+    memory* create_memory() override
+    {
+        return new ddr2_memory();
+    }
+
+    gpu* create_gpu() override
+    {
+        return new integrated_gpu();
+    }
+};
+
+class gaming_pc_factory : public i_pc_factory
+{
+public:
+    box* create_box() override
+    {
+        return new black_box();
+    }
+
+    processor* create_processor() override
+    {
+        return new intel_processor();
+    }
+
+    main_board* create_main_board() override
+    {
+        return new msi_main_board();
+    }
+
+    hdd* create_hdd() override
+    {
+        return new samsung_hdd();
+    }
+
+    memory* create_memory() override
+    {
+        return new ddr3_memory();
+    }
+
+    gpu* create_gpu() override
+    {
+        return new nvidia_gpu();
+    }
+};
+
+class pc_configurator
+{
+    i_pc_factory* pc_factory;
+
+public:
+    void set_factory(i_pc_factory* p_factory)
+    {
+        pc_factory = p_factory;
+    }
+
+    void configure(pc& p_pc)
+    {
+        p_pc.set_box(pc_factory->create_box());
+        p_pc.set_main_board(pc_factory->create_main_board());
+        p_pc.set_hdd(pc_factory->create_hdd());
+        p_pc.set_memory(pc_factory->create_memory());
+        p_pc.set_processor(pc_factory->create_processor());
+        p_pc.set_gpu(pc_factory->create_gpu());
+    }
+};
+
+void print_pc_configuration(string config_name, i_pc_factory* p_factory)
+{
+    pc p_pc;
+    pc_configurator configurator;
+    configurator.set_factory(p_factory);
+    configurator.configure(p_pc);
+    cout << "======== " + config_name + " ========\n";
+    cout << "Box: " + p_pc.get_box()->get_name() + "\n";
+    cout << "MainBoard: " + p_pc.get_main_board()->get_name() + "\n";
+    cout << "Processor: " + p_pc.get_processor()->get_name() + "\n";
+    cout << "HDD: " + p_pc.get_hdd()->get_name() + "\n";
+    cout << "Memory: " + p_pc.get_memory()->get_name() + "\n";
+    cout << "GPU: " + p_pc.get_gpu()->get_name() + "\n";
+}
+
+int main()
+{
+    i_pc_factory* p_factory = new home_pc_factory();
+    print_pc_configuration("Home configuration", p_factory);
+    delete p_factory;
+
+    p_factory = new office_pc_factory();
+    print_pc_configuration("Office configuration", p_factory);
+    delete p_factory;
+
+    p_factory = new gaming_pc_factory();
+    print_pc_configuration("Gaming configuration", p_factory);
+    delete p_factory;
+
+    system("pause");
+    return 0;
+}

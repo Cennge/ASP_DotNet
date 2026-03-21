@@ -7,6 +7,8 @@ using asp_all.Data;
 using Microsoft.EntityFrameworkCore;
 using asp_all.Services.DateTime;
 using asp_all.Middleware.Ticks;
+using asp_all.Services.Storage;
+using asp_all.Middleware.Auth.Session;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHash();
 builder.Services.AddKdf();
 builder.Services.AddDateTime();
+builder.Services.AddStorage();
 
 builder.Services.AddScoped<ScopedService>();
 builder.Services.AddTransient<TransientService>();
@@ -25,7 +28,7 @@ builder.Services.AddTransient<TransientService>();
 builder.Services.AddDistributedMemoryCache();          // Налаштування сесій
 builder.Services.AddSession(options =>                 // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/app-state
 {                                                      // 
-    options.IdleTimeout = TimeSpan.FromSeconds(10);    // 
+    options.IdleTimeout = TimeSpan.FromMinutes(10);    // 
     options.Cookie.HttpOnly = true;                    // 
     options.Cookie.IsEssential = true;                 // 
 });
@@ -50,6 +53,7 @@ app.MapStaticAssets();
 app.UseSession();
 app.UseDemo();
 app.UseTicks();
+app.UseAuthSession();
 
 app.MapControllerRoute(
     name: "default",

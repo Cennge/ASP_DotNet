@@ -62,8 +62,7 @@ namespace asp_all.Data
                     Id = Guid.Parse("41E5ED40-AB13-4B5C-B1D0-3722023EA5C7"),
                     Name = "Default Administrator",
                     Email = "admin@change.me",
-                    Birthdate = new DateTime(2026, 3, 12),
-
+                    Birthdate = new DateTime(2026, 3, 12)
                 }
             );
 

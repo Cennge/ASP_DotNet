@@ -1,0 +1,62 @@
+﻿@inject asp_all.Services.Kdf.IKdfService kdfService
+@model asp_all.Models.Home.DerivedKeyViewModel
+@{
+    ViewData["Title"] = "DerivedKey";
+    string salt = string.IsNullOrEmpty(Model?.DerivedKeyModel?.DkSalt)
+    ? Guid.NewGuid().ToString()
+    : Model.DerivedKeyModel.DkSalt;
+}
+<div class="text-center">
+    <h1 class="display-4"><i class="bi bi-calculator-fill display-5"></i> Обчислювач Derived Key</h1>
+</div>
+<p>
+    Обчислити Derived Key. Якщо сіль не вказана, вона буде згенерована.
+</p>
+<form class="w-25" method="post" asp-action="DerivedKeyFormReceiver" enctype="multipart/form-data">
+
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="dk-salt-addon">
+            <i class="bi bi-fonts"></i>
+        </span>
+        <input type="text"
+               class="form-control"
+               name="dk-salt"
+               placeholder="@Guid.NewGuid().ToString()"
+               aria-label="Salt"
+               aria-describedby="dk-salt-addon">
+    </div>
+
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="dk-password-addon">
+            <i class="bi bi-lock"></i>
+        </span>
+        <input type="password"
+               class="form-control"
+               name="dk-password"
+               placeholder="Password"
+               aria-label="Password"
+               aria-describedby="dk-password-addon"
+               required>
+    </div>
+
+    <button type="submit"
+            class="btn btn-success"
+            name="dk-button"
+            value="Calculate">
+        Обчислити
+    </button>
+</form>
+@if (Model.DerivedKeyModel == null)
+{
+    <i>DK не згенеровано</i>
+}
+else
+{
+    <p>
+        Інформація о DK:
+        <br />
+        Salt: @salt
+        <br />
+        Dk: @kdfService.Dk(@salt, Model.DerivedKeyModel.DkPassword)
+    </p>
+}

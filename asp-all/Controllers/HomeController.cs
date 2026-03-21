@@ -1,3 +1,4 @@
+using asp_all.Data;
 using asp_all.Models;
 using asp_all.Models.Home;
 using asp_all.Services.DateTime;
@@ -5,6 +6,7 @@ using asp_all.Services.Hash;
 using asp_all.Services.Scoped;
 using asp_all.Services.Transient;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Diagnostics;
 using System.Text.Json;
 
@@ -12,17 +14,19 @@ namespace asp_all.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly DataContext _dataContext;
         private readonly IDateTimeService _dateTimeService;
         private readonly IHashService _hashService;
         private readonly ScopedService _scopedService;
         private readonly TransientService _transientService;
 
-        public HomeController(IDateTimeService dateTimeService, IHashService hashService, ScopedService scopedService, TransientService transientService)
+        public HomeController(IDateTimeService dateTimeService, IHashService hashService, ScopedService scopedService, TransientService transientService, DataContext dataContext)
         {
             _hashService = hashService;
             _scopedService = scopedService;
             _transientService = transientService;
             _dateTimeService = dateTimeService;
+            _dataContext = dataContext;
         }
 
         public IActionResult Middleware()
@@ -40,7 +44,26 @@ namespace asp_all.Controllers
                 viewModel.FormModel = JsonSerializer.Deserialize<HomeFormsFormModel>(
                     HttpContext.Session.GetString(nameof(HomeFormsFormModel))!
                 );
+                ModelStateDictionary modelState = new();
+                JsonElement savedState = JsonSerializer.Deserialize<JsonElement>(
+                    HttpContext.Session.GetString(nameof(ModelState))!
+                )!;
+                foreach (var item in savedState.EnumerateObject())
+                {
+                    var errors = item.Value.GetProperty("Errors");
+                    if (errors.GetArrayLength() > 0)
+                    {
+                        foreach (var err in errors.EnumerateArray())
+                        {
+                            modelState.AddModelError(item.Name, err.GetProperty("ErrorMessage").GetString()!);
+                        }
+                    }
+                }
+
+                viewModel.FormModelState = modelState;
+
                 HttpContext.Session.Remove(nameof(HomeFormsFormModel));
+                HttpContext.Session.Remove(nameof(ModelState));
             }
 
             return View(viewModel);
@@ -49,6 +72,16 @@ namespace asp_all.Controllers
         // метод для прийому даних форми, збереження у сесії та передачі редирект
         public IActionResult FormsReceiver(HomeFormsFormModel formModel)
         {
+            if (_dataContext.UserAccesses.Any(ua => ua.Login == formModel.UserLogin))
+            {
+                ModelState.AddModelError("user-login", "Даний логін вже у вжитку");
+            }
+            //Валідація форми
+            HttpContext.Session.SetString(
+                nameof(ModelState),
+                JsonSerializer.Serialize(ModelState)
+            );
+
             HttpContext.Session.SetString(
                 nameof(HomeFormsFormModel),
                 JsonSerializer.Serialize(formModel)
@@ -95,14 +128,50 @@ namespace asp_all.Controllers
             return View();
         }
 
-        public IActionResult Models(RegisterModel registerModel)
+        public IActionResult DerivedKey()
         {
-            RegisterViewModel viewModel = new();
-            if (registerModel.UserButton != null)
+            DerivedKeyViewModel viewModel = new();
+            if (HttpContext.Session.Keys.Contains(nameof(DerivedKeyFormModel)))
             {
-                viewModel.RegisterModel = registerModel;
+                viewModel.DerivedKeyModel = JsonSerializer.Deserialize<DerivedKeyFormModel>(
+                    HttpContext.Session.GetString(nameof(DerivedKeyFormModel))!
+                );
+                HttpContext.Session.Remove(nameof(DerivedKeyFormModel));
             }
             return View(viewModel);
+        }
+
+        public IActionResult DerivedKeyFormReceiver(DerivedKeyFormModel derivedKeyModel)
+        {
+            HttpContext.Session.SetString(
+                nameof(DerivedKeyFormModel),
+                JsonSerializer.Serialize(derivedKeyModel)
+            );
+
+            return RedirectToAction(nameof(DerivedKey));
+        }
+
+        public IActionResult Models()
+        {
+            RegisterViewModel viewModel = new();
+            if (HttpContext.Session.Keys.Contains(nameof(RegisterModel)))
+            {
+                viewModel.RegisterModel = JsonSerializer.Deserialize<RegisterModel>(
+                    HttpContext.Session.GetString(nameof(RegisterModel))!
+                );
+                HttpContext.Session.Remove(nameof(RegisterModel));
+            }
+            return View(viewModel);
+        }
+
+        public IActionResult RegisterFormReceiver(RegisterModel registerModel)
+        {
+            HttpContext.Session.SetString(
+                nameof(RegisterModel),
+                JsonSerializer.Serialize(registerModel)
+            );
+
+            return RedirectToAction(nameof(Models));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
