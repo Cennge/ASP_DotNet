@@ -1,0 +1,40 @@
+﻿@model asp_all.Models.Shop.ShopProductViewModel
+<div class="text-center">
+    <h1 class="display-4">@(Model.ShopProduct == null ? "Товар не знайдено" : Model.ShopProduct.Title)</h1>
+</div>
+
+<div class="row">
+    <div class="col col-2 border-end">
+        @foreach (var shopSection in Model.ShopSections)
+        {
+            <a class="nav-link" href="/Shop/Section/@(shopSection.Slug)"><p>@shopSection.Title</p></a>
+        }
+    </div>
+    <div class="col col-10">
+        @if (Model.ShopProduct != null)
+        {
+            <div class="card mb-3" style="max-width: 100%">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="/Storage/Item/@Model.ShopProduct.ImageUrl" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title">@Model.ShopProduct.Title</h5>
+                            <p class="card-text">@Model.ShopProduct.Description</p>a
+                            <p class="card-text"><small class="text-body-secondary">@Model.ShopProduct.Price</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="mb-4">Вас також можуть зацікавити:</h3>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
+                @foreach (var promo in Model.PromoProducts)
+                {
+                    @Html.DisplayFor(m => promo)
+                }
+            </div>
+        }
+    </div>
+</div>

@@ -4,6 +4,16 @@
     bool isAuth = Context.User.Identity?.IsAuthenticated ?? false;
     String? userAvatar = isAuth ? Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Thumbprint)?.Value : null;
     String? userName = isAuth ? Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value : null;
+
+    String cartQuantity = "0", cartPrice = "0";
+    if (Context.Items.TryGetValue("ActiveCart", out var cart))
+    {
+        if (cart is Cart _cart)
+        {
+            cartQuantity = _cart.CartItems.Sum(ci => ci.Quantity).ToString();
+            cartPrice = _cart.Price.ToString();
+        }
+    }
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -15,7 +25,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/asp_all.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/asp-all.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
@@ -55,10 +65,26 @@
                         <li class="nav-item" title="Обчислювач Derived Key">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="DerivedKey"><i class="bi bi-calculator-fill"></i></a>
                         </li>
+                        <li class="nav-item" title="Крамниця">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Shop" asp-action="Index"><i class="bi bi-bag-check"></i></a>
+                        </li>
+                        <li class="nav-item" title="CORS">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Cors"><i class="bi bi-arrow-left-right"></i></a>
+                        </li>
+                        <li class="nav-item" title="Автентифікація та авторизація">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index"><i class="bi bi-box-arrow-in-right"></i></a>
+                        </li>
                     </ul>
                     @if (isAuth)
                         {
                             <div class="d-flex gap-2">
+
+                            <a asp-controller="Shop" asp-action="Cart"
+                                   title="Ваш кошик: @(cartQuantity) товарів на @(cartPrice) грн"
+                                   class="btn btn-outline-secondary cart-widget">
+                                <i class="bi bi-cart2"></i>
+                                <span>@(cartQuantity)</span>
+                            </a>
                             <a asp-controller="User"
                                    asp-action="Profile"
                                    title="Кабінет користувача"

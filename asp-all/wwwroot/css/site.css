@@ -37,3 +37,32 @@ body {
 .bi-rot-90::before {
     transform: rotate(90deg);
 }
+
+.card-img-max {
+    max-height: 200px;
+}
+
+.title-trim {
+    display: -webkit-box;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cart-widget {
+    position: relative;
+    margin-right: 5px;
+}
+
+.cart-widget span {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    display: block;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    background-color: #00ff90cc;
+    font-size: small;
+}

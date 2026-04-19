@@ -35,6 +35,12 @@ namespace asp_all.Controllers
             return View();
         }
 
+        public IActionResult Cors()
+        {
+
+            return View();
+        }
+
         public IActionResult Forms()
         {
             HomeFormsViewModel viewModel = new();

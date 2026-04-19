@@ -11,6 +11,18 @@ namespace asp_all.Data
 
         public DbSet<Entities.UserRole> UserRoles { get; set; }
 
+        public DbSet<Entities.ShopSection> ShopSections { get; set; }
+
+        public DbSet<Entities.ShopProduct> ShopProducts { get; set; }
+
+        public DbSet<Entities.Discount> Discounts { get; set; }
+
+        public DbSet<Entities.DiscountDetail> DiscountDetails { get; set; }
+
+        public DbSet<Entities.Cart> Carts { get; set; }
+
+        public DbSet<Entities.CartItem> CartItems { get; set; }
+
         public DataContext(DbContextOptions options):base(options)
         {
             
@@ -18,6 +30,23 @@ namespace asp_all.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Entities.UserData>()
+                .HasMany(u => u.Carts)
+                .WithOne();
+
+            modelBuilder.Entity<Entities.Cart>()
+                .HasMany(c => c.CartItems)
+                .WithOne();
+
+            modelBuilder.Entity<Entities.DiscountDetail>()
+                .HasOne(d => d.Product)
+                .WithMany()
+                .HasForeignKey(d => d.ProductId);
+
+            modelBuilder.Entity<Entities.DiscountDetail>()
+                .HasOne(d => d.Discount)
+                .WithMany();
+
             // налаштування моделі БД: а) відношення між сутностями
             modelBuilder.Entity<Entities.UserAccess>()
                 .HasIndex(a => a.Login)
@@ -31,6 +60,20 @@ namespace asp_all.Data
             modelBuilder.Entity<Entities.UserAccess>()
                 .HasOne(a => a.UserRole)
                 .WithMany();
+
+            modelBuilder.Entity<Entities.ShopSection>()
+                .HasIndex(s => s.Slug)
+                .IsUnique();
+
+            modelBuilder.Entity<Entities.ShopProduct>()
+                .HasIndex(p => p.Slug)
+                .IsUnique();
+
+            modelBuilder.Entity<Entities.ShopProduct>()
+                .HasOne(p => p.Section)
+                .WithMany(s => s.Products)
+                .HasPrincipalKey(p => p.Id)
+                .HasForeignKey(p => p.ShopSectionId);
 
             // б) початкові дані
             modelBuilder.Entity<Entities.UserRole>().HasData(

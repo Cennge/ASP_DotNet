@@ -1,0 +1,27 @@
+﻿@using asp_all.Data.Entities
+@model asp_all.Data.Entities.ShopProduct
+
+<div class="col">
+    
+        <div class="card h-100">
+            <a class="nav-link h-100" href="/Shop/Product/@(Model.Slug ?? Model.Id.ToString())">
+                <img src="/Storage/Item/@Model.ImageUrl" class="card-img-top card-img-max" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title ">@Model.Title</h5>
+                    <p class="card-text title-trim" title="@Model.Description">@Model.Description</p>
+                </div>
+            </a>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <b>₴ @Model.Price</b>
+                @if (Context.Items["ActiveCart"] is Cart cart && cart.CartItems.Any(ci => ci.ProductId == Model.Id))
+                {
+                <a href="/Shop/Cart" class="btn btn-success"><i class="bi bi-cart-check"></i></a>
+            }else
+            {
+            <button type="button" class="btn btn-outline-success" data-add-to-cart="@Model.Id"><i class="bi bi-cart2"></i></button>
+                
+            }
+            </div>
+        
+    </div>
+</div>

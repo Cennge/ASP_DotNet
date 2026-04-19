@@ -16,9 +16,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="LocalStorage\" />
-    <Folder Include="Middleware\Auth\Token\" />
-  </ItemGroup>
-
 </Project>

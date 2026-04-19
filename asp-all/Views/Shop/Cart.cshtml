@@ -1,0 +1,30 @@
+﻿@model asp_all.Models.Shop.ShopCartViewModel
+
+<div class="text-center">
+    <h1 class="display-4">Ваш кошик</h1>
+</div>
+
+@if (Model.ActiveCart == null)
+{
+    <p>Ваш кошик поки що порожній</p>
+}
+else
+{
+    foreach (var cartItem in Model.ActiveCart.CartItems)
+    {
+        @Html.DisplayFor(m => cartItem)
+    }
+
+    <div class="row border m-3 p-4">
+        <div class="col d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">Загальна сума: <span class="text-success fw-bold ms-2">@Model.ActiveCart.Price ₴</span></h4>
+                <small class="text-muted">Кількість позицій: @Model.ActiveCart.CartItems.Count</small>
+            </div>
+            <div>
+                <button class="btn btn-outline-secondary me-3" id="cancel-order-btn">Скасувати</button>
+                <button class="btn btn-success btn-lg" id="checkout-order-btn">Оформити замовлення</button>
+            </div>
+        </div>
+    </div>
+}

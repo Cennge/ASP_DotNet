@@ -1,0 +1,30 @@
+﻿@using asp_all.Data.Entities
+@model asp_all.Models.Shop.ShopSectionViewModel
+
+@if (ViewData["ActiveCart"] is Cart cart)
+{
+    <b>@cart.Price</b>
+}
+
+<div class="row">
+    <div class="col col-2 border-end">
+        @foreach (var shopSection in Model.ShopSections)
+        {
+            <a class="nav-link" href="/Shop/Section/@(shopSection.Slug)"><p>@shopSection.Title</p></a>
+        }
+    </div>
+    <div class="col col-10">
+        <div class="text-center">
+            <h1 class="display-4">@(Model.ShopSection == null ? "Розділ не знайдено" : Model.ShopSection.Title)</h1>
+        </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+            @if (Model.ShopSection != null)
+            {
+                foreach (var shopProduct in Model.ShopSection.Products)
+                {
+                    @Html.DisplayFor(m => shopProduct)
+                }
+            }
+        </div>
+    </div>
+</div>

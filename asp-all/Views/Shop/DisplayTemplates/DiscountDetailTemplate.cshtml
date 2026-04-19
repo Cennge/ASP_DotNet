@@ -1,0 +1,20 @@
+﻿@model asp_all.Data.Entities.DiscountDetail
+
+<div class="row border m-2 p-2 align-items-center">
+    <div class="col col-5">
+        <strong>@Model.Product.Title</strong>
+    </div>
+    <div class="col col-4">
+        <span class="badge bg-info text-dark">@Model.Discount.Title</span>
+    </div>
+    <div class="col col-3 text-end">
+        @if (Model.Price.HasValue)
+        {
+            <span class="text-success fw-bold">@Model.Price.Value ₴</span>
+        }
+        else
+        {
+            <span class="text-secondary">За % акції</span>
+        }
+    </div>
+</div>

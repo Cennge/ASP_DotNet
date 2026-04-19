@@ -24,7 +24,6 @@ namespace asp_all.Middleware.Auth.Session
                 if (JsonSerializer.Deserialize<UserAccess>
                     (context.Session.GetString("UserAccess")!) is UserAccess userAccess)
                 {
-                    //context.Items.Add("UserAccess", userAccess);
                     context.User = new ClaimsPrincipal(
                         new ClaimsIdentity(
                             [
@@ -33,6 +32,10 @@ namespace asp_all.Middleware.Auth.Session
                                 new Claim(ClaimTypes.NameIdentifier, userAccess.Login),
                                 new Claim(ClaimTypes.DateOfBirth, userAccess.UserData.Birthdate.ToShortDateString()),
                                 new Claim(ClaimTypes.Thumbprint, userAccess.AvatarFilename ?? ""),
+                                new Claim(ClaimTypes.Role, 
+                                userAccess.UserRoleId == Guid.Parse("56D473BA-ED6B-4695-AEBF-439E2102F2C3")
+                                ? "Admin"
+                                : "Guest"),
                             ],
                             nameof(AuthSessionMiddleware)
                         )

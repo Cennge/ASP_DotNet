@@ -17,5 +17,7 @@ namespace asp_all.Data.Entities
         //інверсна навігаційна властивість - через UserAccess.UserId
         [JsonIgnore]
         public ICollection<UserAccess> UserAccesses { get; set; } = [];
+
+        public ICollection<Cart> Carts { get; set; } = [];
     }
 }

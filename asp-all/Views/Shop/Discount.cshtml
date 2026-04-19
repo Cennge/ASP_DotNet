@@ -1,0 +1,71 @@
+﻿
+@model asp_all.Models.Shop.Admin.AdminDiscountViewModel
+@{
+    ViewData["Title"] = "Admin: Discount";
+}
+<div class="text-center">
+    <h1 class="display-4">Адміністрування крамниці: акції та знижки</h1>
+</div>
+
+<div class="row">
+    <div class="col col-6">
+        <form class="border m-3 p-3">
+            <input name="discount-title" class="w-100" />
+            <textarea name="discount-description" class="w-100"></textarea>
+            <label class="w-100">Відсоток: <input type="number" step="0.01" name="discount-percent" /></label>
+            <label class="w-100">Акційна ціна: <input type="number" step="0.01" name="discount-price" /></label>
+            <input class="w-100" type="datetime-local" name="discount-start" />
+            <input class="w-100" type="datetime-local" name="discount-finish" />
+            <button class="btn btn-primary" type="button" id="admin-discount-btn">Додати</button>
+        </form>
+        @foreach (var discount in Model.Discounts)
+        {
+            @Html.DisplayFor(m => discount, "DiscountTemplate")
+        }
+    </div>
+    <div class="col col-6">
+        <form id="discount-detail-form">
+            <select name="discount-detail-discount-id" class="w-100">
+                @foreach (var discount in Model.Discounts)
+                {
+                    <option value="@discount.Id" title="@discount.Description">@discount.Title</option>
+                }
+            </select>
+            <span class="text-danger small" id="err-discount-detail-discount-id">
+                @Html.ValidationMessage("discount-detail-discount-id")
+            </span>
+
+            <select name="discount-detail-product-id" class="w-100">
+                @foreach (var product in Model.Products)
+                {
+                    <option value="@product.Id" title="@product.Description">@product.Title</option>
+                }
+            </select>
+            <span class="text-danger small" id="err-discount-detail-product-id">
+                @Html.ValidationMessage("discount-detail-product-id")
+            </span>
+
+            <label>Встановити ціну: <input type="number" step="0.01" name="discount-detail-price" /></label>
+            <span class="text-danger small" id="err-discount-detail-price">
+                @Html.ValidationMessage("discount-detail-price")
+            </span>
+            <button class="btn btn-primary" type="button" id="discount-detail-btn">Додати</button>
+        </form>
+        <div class="mt-4">
+            <h4 class="mb-3">Товари в акціях:</h4>
+            @foreach (var dtl in Model.DiscountDetails)
+            {
+                @Html.DisplayFor(m => dtl, "DiscountDetailTemplate")
+            }
+        </div>
+    </div>
+</div>
+
+<p>
+    Шаблони відображення – інструменти для розподілу розмітки, особливо для комплексних об'єктів.
+    Шаблони розміщуються у директоріях представлень у піддиректоріях DisplayTemplates.
+    Назва шаблону, якщо не можлива, має відповідати назві класу, для якого вона призначена.
+    Виключення шаблону реалізує інструкція <code>&commat;Html.DisplayFor(m => discount)</code>
+</p>
+
+<script src="~/js/admin.js"></script>
