@@ -1,0 +1,126 @@
+﻿using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
+
+namespace CenngeShop.Data
+{
+    public class DataContext : DbContext
+    {
+        public DbSet<Entities.UserAccess> UserAccesses { get; set; }
+
+        public DbSet<Entities.UserData> UsersData { get; set; }
+
+        public DbSet<Entities.UserRole> UserRoles { get; set; }
+
+        public DbSet<Entities.ShopSection> ShopSections { get; set; }
+
+        public DbSet<Entities.ShopProduct> ShopProducts { get; set; }
+
+        public DbSet<Entities.Discount> Discounts { get; set; }
+
+        public DbSet<Entities.DiscountDetail> DiscountDetails { get; set; }
+
+        public DbSet<Entities.Cart> Carts { get; set; }
+
+        public DbSet<Entities.CartItem> CartItems { get; set; }
+
+        public DataContext(DbContextOptions options):base(options)
+        {
+            
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Entities.UserData>()
+                .HasMany(u => u.Carts)
+                .WithOne();
+
+            modelBuilder.Entity<Entities.Cart>()
+                .HasMany(c => c.CartItems)
+                .WithOne();
+
+            modelBuilder.Entity<Entities.DiscountDetail>()
+                .HasOne(d => d.Product)
+                .WithMany()
+                .HasForeignKey(d => d.ProductId);
+
+            modelBuilder.Entity<Entities.DiscountDetail>()
+                .HasOne(d => d.Discount)
+                .WithMany();
+
+            // налаштування моделі БД: а) відношення між сутностями
+            modelBuilder.Entity<Entities.UserAccess>()
+                .HasIndex(a => a.Login)
+                .IsUnique();
+
+            modelBuilder.Entity<Entities.UserAccess>()
+                .HasOne(a => a.UserData)
+                .WithMany(d => d.UserAccesses)
+                .HasForeignKey(a => a.UserId);
+
+            modelBuilder.Entity<Entities.UserAccess>()
+                .HasOne(a => a.UserRole)
+                .WithMany();
+
+            modelBuilder.Entity<Entities.ShopSection>()
+                .HasIndex(s => s.Slug)
+                .IsUnique();
+
+            modelBuilder.Entity<Entities.ShopProduct>()
+                .HasIndex(p => p.Slug)
+                .IsUnique();
+
+            modelBuilder.Entity<Entities.ShopProduct>()
+                .HasOne(p => p.Section)
+                .WithMany(s => s.Products)
+                .HasPrincipalKey(p => p.Id)
+                .HasForeignKey(p => p.ShopSectionId);
+
+            // б) початкові дані
+            modelBuilder.Entity<Entities.UserRole>().HasData(
+                new Entities.UserRole
+                {
+                    Id = Guid.Parse("BC84C3AA-F62F-44C6-B822-AE954F450A53"),
+                    Name = "Self Registered",
+                    Description = "Користувачі, що самі зареєструвались на сайті. Мінімальні права доступу",
+                    CreateLevel = 0,
+                    ReadLevel = 0,
+                    UpdateLevel = 0,
+                    DeleteLevel = 0
+                },
+                new Entities.UserRole
+                {
+                    Id = Guid.Parse("56D473BA-ED6B-4695-AEBF-439E2102F2C3"),
+                    Name = "Root Administrator",
+                    Description = "Користувач з максимальним доступом, через якого вводяться інші ролі та доступи",
+                    CreateLevel = -1,
+                    ReadLevel = -1,
+                    UpdateLevel = -1,
+                    DeleteLevel = -1
+                }
+            );
+
+            modelBuilder.Entity<Entities.UserData>().HasData(
+                new Entities.UserData
+                {
+                    Id = Guid.Parse("41E5ED40-AB13-4B5C-B1D0-3722023EA5C7"),
+                    Name = "Default Administrator",
+                    Email = "admin@change.me",
+                    Birthdate = new DateTime(2026, 3, 12)
+                }
+            );
+
+            modelBuilder.Entity<Entities.UserAccess>().HasData(
+                new Entities.UserAccess
+                {
+                    Id = Guid.Parse("F0E98EF0-917F-4BF7-90E9-CBA9BBD86C04"),
+                    UserId = Guid.Parse("41E5ED40-AB13-4B5C-B1D0-3722023EA5C7"),
+                    UserRoleId = Guid.Parse("56D473BA-ED6B-4695-AEBF-439E2102F2C3"),
+                    Login = "DefaultAdministrator",
+                    Salt = "4009BA69-7EFC-4E4F-A9AF-FEC77B759BC6",
+                    CreatedAt = new DateTime(2026, 3, 12),
+                    Dk = "BA8C615C65B7A66750C12605DF7602FDB037A12C"
+                }
+            );
+        }
+    }
+}
