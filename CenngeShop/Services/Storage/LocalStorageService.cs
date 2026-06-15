@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-
-namespace CenngeShop.Services.Storage
+﻿namespace CenngeShop.Services.Storage
 {
     public class LocalStorageService : IStorageService
     {

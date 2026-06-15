@@ -12,6 +12,10 @@ using CenngeShop.Services.Storage;
 using CenngeShop.Services.Transient;
 using Microsoft.EntityFrameworkCore;
 
+// PostgreSQL (Supabase): map DateTime -> 'timestamp without time zone'
+// so existing Unspecified-kind dates (seed data, CreatedAt, Birthdate) work as on SQL Server.
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -35,7 +39,7 @@ builder.Services.AddSession(options =>                 // https://learn.microsof
     options.Cookie.IsEssential = true;                 // 
 });
 
-builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("MainDb")));
+builder.Services.AddDbContext<DataContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("MainDb")));
 
 builder.Services.AddScoped<DataAccessor>();
 
